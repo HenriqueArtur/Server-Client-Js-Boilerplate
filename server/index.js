@@ -2,6 +2,7 @@ const express   = require('express')
 const helmet    = require('helmet')
 const cors      = require('cors')
 const serverApp = require('./server')
+const sequelize  = require('./database.js')
 
 const app = express()
 app.use(helmet())
@@ -11,5 +12,14 @@ app.use((request, response, next) => {
   response.setHeader('X-Powered-By', 'Company Name')
   next()
 })
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+  })
+  .catch(error => {
+    console.error('Unable to connect to the database:', error);
+  })
 
 serverApp(app)
