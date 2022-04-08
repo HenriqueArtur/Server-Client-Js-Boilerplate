@@ -6,7 +6,11 @@
   "license": "MIT",
   "author": "Henrique Artur <contato@henriqueartur.com>",
   "scripts": {
-    "start": "NODE_ENV=development node index.js"
+    "start": "NODE_ENV=development && node index.js",
+    "dev": "NODE_ENV=development && nodemon index.js"
+  },
+  "nodemonConfig": {
+    "ignore": ["node_modules/*", "yarn.lock", ".env.example"]
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
