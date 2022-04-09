@@ -10,13 +10,18 @@
     "dev": "NODE_ENV=development && nodemon index.js"
   },
   "nodemonConfig": {
-    "ignore": ["node_modules/*", "yarn.lock", ".env.example"]
+    "ignore": [
+      "node_modules/*",
+      "yarn.lock",
+      ".env.example"
+    ]
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
     "sequelize-cli": "^6.4.1"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "consign": "^0.1.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
