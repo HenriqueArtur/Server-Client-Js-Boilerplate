@@ -78,7 +78,7 @@ powered by Company Name
 }
 
 function server_private_routes(server) {
-  const router_versions = path.join(__dirname, '/src/routes/private')
+  const router_versions = path.join(__dirname, '/src/routes/')
   for (const version of fs.readdirSync(router_versions)) {
     const router = express.Router()
     consign({ verbose: false })
@@ -89,7 +89,7 @@ function server_private_routes(server) {
 }
 
 function server_public_routes(server) {
-  const router_versions = path.join(__dirname, '/src/routes/public')
+  const router_versions = path.join(__dirname, '/src/routes/')
   for (const version of fs.readdirSync(router_versions)) {
     const router = express.Router()
     consign({ verbose: false })
