@@ -51,5 +51,6 @@ export async function _delete({ url, route, auth, body }) {
 }
 
 async function request(query = {}) {
-  return await axios(query)
+  let response = await axios(query)
+  return response.data
 }
