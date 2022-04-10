@@ -1,11 +1,15 @@
 require('dotenv').config()
+
 const os      = require('os')
 const fs      = require('fs')
+const cors    = require('cors')
 const path    = require('path')
 const http    = require('http')
 const https   = require('https')
+const helmet  = require('helmet')
 const express = require('express')
 const consign = require('consign')
+const { company_name, logo } = require('./infos')
 
 function server_app(server) {
   const environment     = process.env.NODE_ENV
@@ -19,6 +23,8 @@ function server_app(server) {
     response.end()
   }
 
+  server_uses(server)
+
   server_private_routes(server)
   server_public_routes(server)
   server_not_found_routes(server)
@@ -31,7 +37,7 @@ function server_app(server) {
     case 'development':
       dev_server = http.createServer(server)
       server.set('server', dev_server)
-      dev_server.listen(localhost_port, 'localhost', startLog('http', 'localhost', localhost_port, environment))
+      dev_server.listen(localhost_port, 'localhost', start_log('http', 'localhost', localhost_port, environment))
       break
     
     case 'production':
@@ -51,7 +57,7 @@ function server_app(server) {
       https_server = https.createServer(credentials, server)
       server.set('server', https_server)
       http_server.listen(redirect_port)
-      https_server.listen(default_port, startLog('https', hostname, default_port, environment))
+      https_server.listen(default_port, start_log('https', hostname, default_port, environment))
       break
     
     case 'test': throw new Error('Test environment is not implemented')
@@ -62,21 +68,25 @@ function server_app(server) {
 
 module.exports = server_app
 
-const startLog = (protocol, hostname, port, environment) => {
-  const logo = `
- _____           _         _   
-|  _  |___ ___  |_|___ ___| |_ 
-|   __|  _| . | | | -_|  _|  _|
-|__|  |_| |___|_| |___|___|_|  
-              |___|            
-                                                
-powered by Company Name
+/* -------------> HANDLERS <------------- */
+function server_uses(server) {
+  server.use(helmet())
+  server.use(cors())
 
-● ${protocol}://${hostname}:${port}
-✓ ${environment} mode`
-  return console.log(logo)
+  server.use((request, response, next) => {
+    response.setHeader('X-Powered-By', company_name)
+    next()
+  })
 }
 
+function redirect_to(protocol = 'https') {
+  return (request, response) => {
+    response.writeHead(301, { "Location": protocol + "://" + request.headers['host'] + request.url })
+    response.end()
+  }
+}
+
+/* -------------> UP ROUTES <------------- */
 function server_private_routes(server) {
   const router_versions = path.join(__dirname, '/src/routes/')
   for (const version of fs.readdirSync(router_versions)) {
@@ -105,4 +115,16 @@ function server_not_found_routes(server) {
     error: 'Service not found or not exists.' 
   }
   server.all('*', (request, response) => response.status(404).json(response_object))
+}
+
+/* -------------> LOGO <------------- */
+const start_log = (protocol, hostname, port, environment) => {
+  const start_logo = `
+${logo}
+
+powered by ${company_name}
+
+● ${protocol}://${hostname}:${port}
+✓ ${environment} mode`
+  return console.log(start_logo)
 }
