@@ -19,7 +19,9 @@ function serverApp(server) {
     response.end()
   }
 
-  serverRoutes(server)
+  server_private_routes(server)
+  server_public_routes(server)
+  server_not_found_routes(server)
 
   let devServer     = null
   let httpServer    = null
@@ -75,14 +77,32 @@ powered by Company Name
   return console.log(logo)
 }
 
-function serverRoutes(server) {
-  const routerVersions = path.join(__dirname, '/src/routes')
-  for (const version of fs.readdirSync(routerVersions)) {
+function server_private_routes(server) {
+  const router_versions = path.join(__dirname, '/src/routes/private')
+  for (const version of fs.readdirSync(router_versions)) {
     const router = express.Router()
     consign({ verbose: false })
-      .then(`/src/routes/${version}`)
+      .then(`/src/routes/private/${version}`)
       .into({ server, router, version })
-    server.use(`/v${version}`, router)
+    server.use(`/api/v${version}`, router)
   }
-  server.all('*', (request, response) => response.status(404).json({ status: 'Not Found', error: 'Service not found or not exists.' }))
+}
+
+function server_public_routes(server) {
+  const router_versions = path.join(__dirname, '/src/routes/public')
+  for (const version of fs.readdirSync(router_versions)) {
+    const router = express.Router()
+    consign({ verbose: false })
+      .then(`/src/routes/public/${version}`)
+      .into({ server, router, version })
+    server.use(`/api/v${version}/public`, router)
+  }
+}
+
+function server_not_found_routes(server) {
+  const response_object = {
+    status: 'Not Found',
+    error: 'Service not found or not exists.' 
+  }
+  server.all('*', (request, response) => response.status(404).json(response_object))
 }

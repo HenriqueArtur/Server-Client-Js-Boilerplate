@@ -1,4 +1,4 @@
-const exec = require('./../../useCases/hello_world/index.js')
+const exec = require('../../../useCases/hello_world/index.js')
 module.exports = ({ server, router }) => {
   router.get('/helloworld', (request, response) => {
     const hello_world = exec()
