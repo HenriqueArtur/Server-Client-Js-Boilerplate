@@ -7,12 +7,12 @@ const https   = require('https')
 const express = require('express')
 const consign = require('consign')
 
-function serverApp(server) {
+function server_app(server) {
   const environment     = process.env.NODE_ENV
-  const defaultPort     = process.env.DEFAULT_PORT
-  const redirectPort    = process.env.REDIRECT_PORT
-  const localhostPort   = process.env.LOCALHOST_PORT
-  const hostname = os.hostname()
+  const default_port    = process.env.DEFAULT_PORT
+  const redirect_port   = process.env.REDIRECT_PORT
+  const localhost_port  = process.env.LOCALHOST_PORT
+  const hostname        = os.hostname()
 
   const redirect_to = (protocol = 'https') => function (request, response) {
     response.writeHead(301, { "Location": protocol + "://" + request.headers['host'] + request.url })
@@ -23,35 +23,35 @@ function serverApp(server) {
   server_public_routes(server)
   server_not_found_routes(server)
 
-  let devServer     = null
-  let httpServer    = null
-  let httpsServer   = null
+  let dev_server   = null
+  let http_server  = null
+  let https_server = null
 
   switch (environment) {
     case 'development':
-      devServer = http.createServer(server)
-      server.set('server', devServer)
-      devServer.listen(localhostPort, 'localhost', startLog('http', 'localhost', localhostPort, environment))
+      dev_server = http.createServer(server)
+      server.set('server', dev_server)
+      dev_server.listen(localhost_port, 'localhost', startLog('http', 'localhost', localhost_port, environment))
       break
     
     case 'production':
-      const dnsFileRoot = '/etc/letsencrypt/live'
-      const liveList    = fs.readdirSync(dnsFileRoot)
-      const dnsPath     = liveList.filter(f => f.includes(hostname))
-      const privateKey  = fs.readFileSync(`${dnsFileRoot}/${dnsPath}/privkey.pem`, 'utf8')
-      const certificate = fs.readFileSync(`${dnsFileRoot}/${dnsPath}/cert.pem`, 'utf8')
-      const chain       = fs.readFileSync(`${dnsFileRoot}/${dnsPath}/chain.pem`, 'utf8')
-      const credentials = {
-        key: privateKey,
+      const dns_file_root = '/etc/letsencrypt/live'
+      const live_list     = fs.readdirSync(dns_file_root)
+      const dns_path      = live_list.filter(f => f.includes(hostname))
+      const private_key   = fs.readFileSync(`${dns_file_root}/${dns_path}/privkey.pem`, 'utf8')
+      const certificate   = fs.readFileSync(`${dns_file_root}/${dns_path}/cert.pem`, 'utf8')
+      const chain         = fs.readFileSync(`${dns_file_root}/${dns_path}/chain.pem`, 'utf8')
+      const credentials   = {
+        key: private_key,
         cert: certificate,
         ca: chain
       }
       
-      httpServer  = http.createServer(redirect_to('https'))
-      httpsServer = https.createServer(credentials, server)
-      server.set('server', httpsServer)
-      httpServer.listen(redirectPort)
-      httpsServer.listen(defaultPort, startLog('https', hostname, defaultPort, environment))
+      http_server  = http.createServer(redirect_to('https'))
+      https_server = https.createServer(credentials, server)
+      server.set('server', https_server)
+      http_server.listen(redirect_port)
+      https_server.listen(default_port, startLog('https', hostname, default_port, environment))
       break
     
     case 'test': throw new Error('Test environment is not implemented')
@@ -60,7 +60,7 @@ function serverApp(server) {
   }
 }
 
-module.exports = serverApp
+module.exports = server_app
 
 const startLog = (protocol, hostname, port, environment) => {
   const logo = `

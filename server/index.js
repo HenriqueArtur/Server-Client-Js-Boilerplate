@@ -1,8 +1,8 @@
-const express   = require('express')
-const helmet    = require('helmet')
-const cors      = require('cors')
-const serverApp = require('./server')
-const sequelize  = require('./database.js')
+const express     = require('express')
+const helmet      = require('helmet')
+const cors        = require('cors')
+const server_app  = require('./server')
+const sequelize   = require('./database.js')
 
 const app = express()
 app.use(helmet())
@@ -22,4 +22,4 @@ sequelize
     console.error('Unable to connect to the database:', error);
   })
 
-serverApp(app)
+server_app(app)
