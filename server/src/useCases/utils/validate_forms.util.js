@@ -1,7 +1,6 @@
 /**
- * 
- * @param {*} email 
- * @returns boolean
+ * @param {string} email 
+ * @returns {boolean}
  */
 export function validate_email(email) {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -11,9 +10,9 @@ export function validate_email(email) {
 }
 
 /**
- * @link https://www.geradorcpf.com/javascript-validar-cpf.htm
- * @param {*} cpf 
- * @returns boolean
+ * @see https://www.geradorcpf.com/javascript-validar-cpf.htm
+ * @param {string | number} cpf 
+ * @returns {boolean}
  */
 export function validate_cpf(cpf) {
   cpf = cpf.replace(/[^\d]+/g,'')
@@ -51,9 +50,9 @@ export function validate_cpf(cpf) {
 }
 
 /**
- * @link https://www.geradorcnpj.com/javascript-validar-cnpj.htm
- * @param {*} cnpj 
- * @returns boolean
+ * @see https://www.geradorcnpj.com/javascript-validar-cnpj.htm
+ * @param {string | number} cnpj 
+ * @returns {boolean}
  */
 export function validate_cnpj(cnpj) {
   cnpj = cnpj.replace(/[^\d]+/g,'')
@@ -100,9 +99,8 @@ export function validate_cnpj(cnpj) {
 }
 
 /**
- * 
- * @param {*} phone 
- * @returns boolean
+ * @param {string | number} phone 
+ * @returns {boolean}
  */
 export function validate_phone(phone) {
   phone = phone.replace(/[^\d]+/g,'')
